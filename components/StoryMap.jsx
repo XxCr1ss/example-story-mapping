@@ -1,79 +1,40 @@
-const activities = [
-  'Buscar productos',
-  'Seleccionar producto',
-  'Añadir al carrito',
-  'Realizar pago',
-  'Recibir confirmación',
-];
+export default function StoryMap({ activities, releases, epics, activityToEpic }) {
+  // Si hay épicas, agrupar actividades por épica
+  let epicRows = [];
+  if (epics && activityToEpic) {
+    epicRows = epics.map((epic, epicIdx) => {
+      // indices de actividades que pertenecen a esta épica
+      const indices = activities
+        .map((_, idx) => (activityToEpic[idx] === epicIdx ? idx : -1))
+        .filter(idx => idx !== -1);
+      return { epic, indices };
+    });
+  }
 
-const releases = [
-  {
-    name: 'Release 1',
-    stories: [
-      [
-        'Como usuario, quiero filtrar por categoría.',
-        'Como usuario, quiero buscar por palabra clave.',
-      ],
-      [
-        'Como usuario, quiero ver la descripción detallada.',
-      ],
-      [
-        'Como usuario, quiero añadir un producto al carrito.',
-      ],
-      [
-        'Como usuario, quiero elegir el método de pago.',
-      ],
-      [
-        'Como usuario, quiero recibir un correo de confirmación.',
-      ],
-    ],
-  },
-  {
-    name: 'Release 2',
-    stories: [
-      [
-        'Como usuario, quiero ver productos recomendados.',
-      ],
-      [
-        'Como usuario, quiero ver imágenes del producto.',
-      ],
-      [
-        'Como usuario, quiero modificar cantidades.',
-      ],
-      [
-        'Como usuario, quiero introducir datos de envío.',
-      ],
-      [
-        'Como usuario, quiero recibir un número de seguimiento.',
-      ],
-    ],
-  },
-  {
-    name: 'Release 3',
-    stories: [
-      [],
-      [
-        'Como usuario, quiero ver opiniones de otros compradores.',
-      ],
-      [
-        'Como usuario, quiero eliminar un producto del carrito.',
-      ],
-      [
-        'Como usuario, quiero aplicar cupones de descuento.',
-      ],
-      [],
-    ],
-  },
-];
+  const showReleasesLeft = true;
 
-export default function StoryMap() {
   return (
     <section
       className="storymap-grid w-full overflow-x-auto"
       aria-label="Story Map"
       tabIndex={0}
     >
-      <div className="min-w-[700px]">
+      <div className="w-full">
+        {/* Épicas (si existen) */}
+        {epics && activityToEpic && (
+          <div className="grid grid-cols-5 gap-4 mb-1">
+            {epicRows.map(({ epic, indices }) => (
+              <div
+                key={epic}
+                className={`col-span-${indices.length} text-center font-bold text-accent text-base md:text-lg px-2 py-1 bg-accent/10 rounded`}
+                style={{ gridColumn: `${indices[0] + 1} / span ${indices.length}` }}
+                aria-label={`Épica: ${epic}`}
+              >
+                {epic}
+              </div>
+            ))}
+          </div>
+        )}
         {/* Encabezado de actividades */}
         <div className="grid grid-cols-5 gap-4 mb-2">
           {activities.map((activity, idx) => (
@@ -88,10 +49,16 @@ export default function StoryMap() {
         </div>
         {/* Releases y tarjetas */}
         {releases.map((release, rIdx) => (
-          <div key={release.name} className="grid grid-cols-5 gap-4 mb-4 items-start">
+          <div key={release.name} className="relative grid grid-cols-5 gap-4 mb-4 items-start">
+            {showReleasesLeft && (
+              <div className="absolute -left-28 top-1/2 -translate-y-1/2 hidden md:block">
+                <span className="inline-block bg-secondary text-white text-xs font-bold rounded px-2 py-1 shadow-card">
+                  {release.name}
+                </span>
+              </div>
+            )}
             {release.stories.map((stories, cIdx) => (
               <div key={cIdx} className="flex flex-col gap-2 min-h-[60px]">
-                {/* Eliminado: etiqueta de release sr-only */}
                 {stories.length > 0 ? (
                   stories.map((story, sIdx) => (
                     <div
@@ -109,20 +76,21 @@ export default function StoryMap() {
                 )}
               </div>
             ))}
-            {/* Eliminado: etiqueta de release al inicio de la fila */}
           </div>
         ))}
         {/* Releases en móvil/tablet */}
-        <div className="flex flex-row gap-4 mt-2 md:hidden">
-          {releases.map((release) => (
-            <span
-              key={release.name}
-              className="inline-block bg-secondary text-white text-xs font-bold rounded px-2 py-1 shadow-card"
-            >
-              {release.name}
-            </span>
-          ))}
-        </div>
+        {showReleasesLeft && (
+          <div className="flex flex-row gap-4 mt-2 md:hidden">
+            {releases.map((release) => (
+              <span
+                key={release.name}
+                className="inline-block bg-secondary text-white text-xs font-bold rounded px-2 py-1 shadow-card"
+              >
+                {release.name}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
