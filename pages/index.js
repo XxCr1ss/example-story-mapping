@@ -77,11 +77,11 @@ export default function Home() {
 
   // Datos versión extendida (con Sprint y Épicas)
   const activitiesExtended = [
-    'Explorar catálogo',
-    'Evaluar productos',
-    'Gestión de carrito',
-    'Pago y envío',
-    'Confirmación',
+    'Buscar productos',
+    'Seleccionar producto',
+    'Añadir al carrito',
+    'Realizar pago',
+    'Recibir confirmación',
   ];
   const releasesExtended = [
     {
