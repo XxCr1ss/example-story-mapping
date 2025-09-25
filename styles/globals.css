@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-background text-gray-900;
+}
+
+.card {
+  @apply bg-card shadow-card rounded-lg p-4 transition-transform duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary hover:scale-105;
+}
+
+.storymap-grid {
+  @apply w-full overflow-x-auto;
+}
+
+/* Accesibilidad: alto contraste para tarjetas activas/foco */
+.card:focus, .card:active {
+  @apply ring-2 ring-primary;
+}
